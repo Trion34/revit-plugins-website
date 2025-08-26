@@ -10,16 +10,6 @@ This website provides a professional platform for selling specialized API plugin
 - **MEP**: HVAC, electrical, plumbing, and coordination tools
 - **Custom Development**: Request form for tailored plugin solutions
 
-## Features
-
-- 🎨 Modern, responsive design optimized for AEC industry
-- 📦 Product catalog with filtering by category
-- 💳 Shopping cart functionality (ready for payment integration)
-- 📝 Custom plugin request form
-- 🔍 Product search and categorization
-- 📱 Mobile-responsive design
-- ⚡ Fast performance with Vite
-
 ## Tech Stack
 
 - **Frontend Framework**: React 19 with TypeScript
@@ -193,12 +183,6 @@ For production, you'll want to:
 
 This project is proprietary. All rights reserved.
 
-## Contact
-
-For questions about the website or plugin development:
-- Email: support@apipluginspro.com
-- GitHub: https://github.com/Trion34/revit-plugins-website
-
 ## Notes for Nastya
 
 Hey Nastya! Here are some specific notes for you:
@@ -212,8 +196,6 @@ Hey Nastya! Here are some specific notes for you:
 4. **SEO**: Add meta tags and Open Graph data for better search engine visibility.
 
 5. **Analytics**: Consider adding Google Analytics or similar to track user behavior and popular plugins.
-
-Feel free to reach out if you need any clarification on the codebase structure!
 
 ---
 
