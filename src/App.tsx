@@ -8,6 +8,7 @@ import MEP from './pages/MEP';
 import CustomRequest from './pages/CustomRequest';
 import Cart from './pages/Cart';
 import Dashboard from './pages/Dashboard';
+import PluginManagement from './pages/PluginManagement';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
               <Route path="/custom-request" element={<CustomRequest />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/plugin-management" element={<PluginManagement />} />
             </Routes>
           </main>
           <Footer />
