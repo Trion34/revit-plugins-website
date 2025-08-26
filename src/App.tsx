@@ -6,24 +6,31 @@ import Architecture from './pages/Architecture';
 import CivilEngineering from './pages/CivilEngineering';
 import MEP from './pages/MEP';
 import CustomRequest from './pages/CustomRequest';
+import Cart from './pages/Cart';
+import Dashboard from './pages/Dashboard';
+import { CartProvider } from './context/CartContext';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/architecture" element={<Architecture />} />
-            <Route path="/civil-engineering" element={<CivilEngineering />} />
-            <Route path="/mep" element={<MEP />} />
-            <Route path="/custom-request" element={<CustomRequest />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <CartProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-gray-50">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/architecture" element={<Architecture />} />
+              <Route path="/civil-engineering" element={<CivilEngineering />} />
+              <Route path="/mep" element={<MEP />} />
+              <Route path="/custom-request" element={<CustomRequest />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </CartProvider>
   );
 }
 

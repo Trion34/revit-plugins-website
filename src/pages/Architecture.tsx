@@ -1,5 +1,7 @@
-import { ShoppingCart, Download, Star, Clock, Users } from 'lucide-react';
+import { ShoppingCart, Download, Star, Check } from 'lucide-react';
 import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import SearchBar from '../components/SearchBar';
 
 interface Plugin {
   id: number;
@@ -14,6 +16,9 @@ interface Plugin {
 
 export default function Architecture() {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [addedToCart, setAddedToCart] = useState<number[]>([]);
+  const { addToCart } = useCart();
 
   const plugins: Plugin[] = [
     {
@@ -80,9 +85,26 @@ export default function Architecture() {
 
   const categories = ['All', 'Space Planning', 'Documentation', 'Rendering', 'BIM Management', 'Design Tools'];
 
-  const filteredPlugins = selectedCategory === 'All' 
-    ? plugins 
-    : plugins.filter(plugin => plugin.category === selectedCategory);
+  const filteredPlugins = plugins.filter(plugin => {
+    const matchesCategory = selectedCategory === 'All' || plugin.category === selectedCategory;
+    const matchesSearch = searchQuery === '' || 
+      plugin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      plugin.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const handleAddToCart = (plugin: Plugin) => {
+    addToCart({
+      id: plugin.id,
+      name: plugin.name,
+      price: plugin.price,
+      category: plugin.category
+    });
+    setAddedToCart([...addedToCart, plugin.id]);
+    setTimeout(() => {
+      setAddedToCart(prev => prev.filter(id => id !== plugin.id));
+    }, 2000);
+  };
 
   return (
     <div className="py-12">
@@ -95,69 +117,103 @@ export default function Architecture() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-full font-medium transition-colors ${
-                selectedCategory === category
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full font-medium transition-colors ${
+                  selectedCategory === category
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+          <SearchBar onSearch={setSearchQuery} placeholder="Search architecture plugins..." />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPlugins.map((plugin) => (
-            <div key={plugin.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">{plugin.name}</h3>
-                  <span className="bg-blue-100 text-primary px-2 py-1 rounded text-sm font-semibold">
-                    {plugin.category}
-                  </span>
-                </div>
-                
-                <p className="text-gray-600 mb-4">{plugin.description}</p>
-                
-                <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                    <span>{plugin.rating}</span>
+        {filteredPlugins.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-600">No plugins found matching your criteria.</p>
+            <button
+              onClick={() => {
+                setSelectedCategory('All');
+                setSearchQuery('');
+              }}
+              className="mt-4 text-primary hover:text-blue-700 font-medium"
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPlugins.map((plugin) => (
+              <div key={plugin.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-bold text-gray-900">{plugin.name}</h3>
+                    <span className="bg-blue-100 text-primary px-2 py-1 rounded text-sm font-semibold">
+                      {plugin.category}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Download className="h-4 w-4" />
-                    <span>{plugin.downloads}</span>
+                  
+                  <p className="text-gray-600 mb-4">{plugin.description}</p>
+                  
+                  <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                      <span>{plugin.rating}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Download className="h-4 w-4" />
+                      <span>{plugin.downloads}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">Key Features:</p>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {plugin.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <span className="text-primary mr-2">•</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                  <div className="mb-4">
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Key Features:</p>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      {plugin.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <span className="text-primary mr-2">•</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                <div className="flex items-center justify-between pt-4 border-t">
-                  <span className="text-2xl font-bold text-gray-900">${plugin.price}</span>
-                  <button className="bg-primary text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2">
-                    <ShoppingCart className="h-4 w-4" />
-                    Add to Cart
-                  </button>
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <span className="text-2xl font-bold text-gray-900">${plugin.price}</span>
+                    <button 
+                      onClick={() => handleAddToCart(plugin)}
+                      className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                        addedToCart.includes(plugin.id)
+                          ? 'bg-green-500 text-white'
+                          : 'bg-primary text-white hover:bg-blue-700'
+                      }`}
+                    >
+                      {addedToCart.includes(plugin.id) ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          Added!
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart className="h-4 w-4" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="mt-12 bg-blue-50 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Need Help Choosing?</h2>

@@ -1,10 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Code2, ShoppingCart } from 'lucide-react';
+import { Menu, X, Code2, ShoppingCart, User } from 'lucide-react';
 import { useState } from 'react';
+import { useCart } from '../context/CartContext';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { totalItems } = useCart();
 
   const navItems = [
     { path: '/', label: 'Home' },
@@ -25,7 +27,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -37,10 +39,27 @@ export default function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+            <Link
+              to="/dashboard"
+              className={`text-gray-600 hover:text-primary transition-colors flex items-center gap-1 ${
+                location.pathname === '/dashboard' ? 'text-primary font-semibold' : ''
+              }`}
+            >
+              <User className="h-4 w-4" />
+              Dashboard
+            </Link>
+            <Link
+              to="/cart"
+              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 relative"
+            >
               <ShoppingCart className="h-4 w-4" />
               <span>Cart</span>
-            </button>
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
           </div>
 
           <div className="md:hidden flex items-center">
@@ -70,10 +89,30 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <button className="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 mt-2">
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMenuOpen(false)}
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  location.pathname === '/dashboard'
+                    ? 'text-primary bg-blue-50'
+                    : 'text-gray-600 hover:text-primary hover:bg-gray-50'
+                }`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/cart"
+                onClick={() => setIsMenuOpen(false)}
+                className="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 mt-2 relative"
+              >
                 <ShoppingCart className="h-4 w-4" />
                 <span>Cart</span>
-              </button>
+                {totalItems > 0 && (
+                  <span className="ml-2 bg-white text-primary text-xs rounded-full px-2 py-0.5">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
             </div>
           </div>
         )}
