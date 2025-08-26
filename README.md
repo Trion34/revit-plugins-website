@@ -10,16 +10,6 @@ This website provides a professional platform for selling specialized API plugin
 - **MEP**: HVAC, electrical, plumbing, and coordination tools
 - **Custom Development**: Request form for tailored plugin solutions
 
-## Features
-
-- 🎨 Modern, responsive design optimized for AEC industry
-- 📦 Product catalog with filtering by category
-- 💳 Shopping cart functionality (ready for payment integration)
-- 📝 Custom plugin request form
-- 🔍 Product search and categorization
-- 📱 Mobile-responsive design
-- ⚡ Fast performance with Vite
-
 ## Tech Stack
 
 - **Frontend Framework**: React 19 with TypeScript
